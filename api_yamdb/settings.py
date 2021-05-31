@@ -14,6 +14,13 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'yamdbyamdb@gmail.com'
+EMAIL_HOST_PASSWORD = 'admin2507'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True
 
 
 # Quick-start development settings - unsuitable for production
@@ -31,6 +38,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'user',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -130,10 +139,10 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ]
 }
 
 AUTH_USER_MODEL = 'user.CustomUser'
-
 
