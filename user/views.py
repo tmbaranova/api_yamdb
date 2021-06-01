@@ -1,14 +1,17 @@
-from django.shortcuts import render
 from django.contrib.auth import get_user_model
+
 from rest_framework import viewsets
+
+from api import permissions
+
 from .serializers import UserSerializer
-from rest_framework.permissions import IsAdminUser, AllowAny
 
 User = get_user_model()
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
-    # permission_classes = [AllowAny]
+    permission_classes = [permissions.IsAdmin]
     search_fields = ['user__username', ]
