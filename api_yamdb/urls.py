@@ -11,6 +11,5 @@ urlpatterns = [
 
     ),
     path('api/v1/', include("user.urls")),
-    path('auth', include("user.urls")),
 
 ]
