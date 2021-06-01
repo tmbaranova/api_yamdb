@@ -1,5 +1,6 @@
 from django.db import models
 
+from .validators import validate_title_year
 
 class Category(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -26,10 +27,11 @@ class Genre(models.Model):
 
 class Title(models.Model):
     name = models.CharField(max_length=200)
-    year = models.IntegerField()
-    description = models.TextField()
-    genre = models.ManyToManyField('Genre')
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL,)
+    year = models.IntegerField(validators=[validate_title_year], blank=True)
+    description = models.TextField(blank=True)
+    genre = models.ManyToManyField('Genre', blank=True, related_name='titles')
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL,
+                                 null=True,  blank=True, related_name='titles')
 
     class Meta:
         ordering = ['-id',]
