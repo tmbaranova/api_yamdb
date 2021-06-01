@@ -26,5 +26,12 @@ sqlparse==0.3.1           # via django
 urllib3==1.25.9           # via requests
 wcwidth==0.1.9            # via pytest
 zipp==3.1.0               # via importlib-metadata
+<<<<<<< HEAD
 flake8
 isort
+=======
+djangorestframework_simplejwt
+isort
+flake8
+django-filter
+>>>>>>> master
