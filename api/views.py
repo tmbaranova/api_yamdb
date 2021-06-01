@@ -1,4 +1,3 @@
-from django.db.models import Avg
 from rest_framework import permissions, viewsets, filters, mixins
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Category, Genre, Title

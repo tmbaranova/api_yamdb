@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt import views as jwt_views
 
 from . import views
-from user.views import CurrentUserDetail, UserViewSet
+from user.views import CurrentUserDetail, UserViewSet, email_view
 
 
 router = DefaultRouter()
@@ -19,6 +19,8 @@ v1_patterns = [
     path('auth/token/refresh/', jwt_views.TokenRefreshView.as_view(),
          name='token_refresh'),
     path('users/me/', CurrentUserDetail.as_view()),
+    path('auth/email/', email_view, name='email'),
+
     path('', include(router.urls)),
 
 ]
