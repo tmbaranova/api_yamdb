@@ -1,4 +1,3 @@
-
 import datetime as dt
 
 from django.core.exceptions import ValidationError
