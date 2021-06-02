@@ -5,18 +5,18 @@ from django.db import models
 
 class CustomUserManager(BaseUserManager):
 
-    def create_user(self, email, password, **kwargs):
+    def create_user(self, email, **kwargs):
         email = self.normalize_email(email)
         user = self.model(email=email, **kwargs)
-        user.set_password(password)
         user.save()
         return user
 
-    def create_superuser(self, email, password, **kwargs):
+    def create_superuser(self, email, **kwargs):
         email = self.normalize_email(email)
+        confirmation_code = 000000
         user = self.model(email=email, is_staff=True, is_superuser=True,
+                          confirmation_code=confirmation_code,
                           **kwargs)
-        user.set_password(password)
         user.save()
         return user
 

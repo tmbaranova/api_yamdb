@@ -62,7 +62,7 @@ def email_view(request):
         message = f'Ваш код подтверждения:{confirmation_code}'
         User.objects.create_user(email=email,
                                  confirmation_code=confirmation_code,
-                                 username=username, password=confirmation_code)
+                                 username=username)
         send_mail('Код подтверждения', message,
                   settings.DEFAULT_FROM_EMAIL, [email])
         return Response('Код отправлен', status=status.HTTP_200_OK)
