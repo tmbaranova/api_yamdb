@@ -1,10 +1,11 @@
-from rest_framework import permissions, viewsets, filters, mixins
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, mixins, permissions, viewsets
+
+from .filters import TitleFilter
 from .models import Category, Genre, Title
 from .permissions import IsAdminOrReadOnly
 from .serializers import (CategorySerializer, GenreSerializer,
-                          TitleReadSerializer, TitleCreateSerializer)
-from .filters import TitleFilter
+                          TitleCreateSerializer, TitleReadSerializer)
 
 
 class CustomViewSet(

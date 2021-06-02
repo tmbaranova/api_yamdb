@@ -1,10 +1,10 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt import views as jwt_views
+
+from user.views import (CurrentUserDetail, UserViewSet, email_view,
+                        get_token_view)
 
 from . import views
-from user.views import CurrentUserDetail, UserViewSet, email_view
-
 
 router = DefaultRouter()
 
@@ -14,9 +14,9 @@ router.register('genres', views.GenreViewSet, basename='genre')
 router.register('titles', views.TitleViewSet, basename='title')
 
 v1_patterns = [
-    path('auth/token/', jwt_views.TokenObtainPairView.as_view(),
-         name='token_obtain_pair'),
-    path('auth/token/refresh/', jwt_views.TokenRefreshView.as_view(),
+    path('auth/token/', get_token_view,
+         name='token'),
+    path('auth/token/refresh/', get_token_view,
          name='token_refresh'),
     path('users/me/', CurrentUserDetail.as_view()),
     path('auth/email/', email_view, name='email'),
