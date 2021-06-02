@@ -19,8 +19,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'yamdbyamdb@gmail.com'
 EMAIL_HOST_PASSWORD = 'admin2507'
+DEFAULT_FROM_EMAIL = 'yamdbyamdb@gmail.com'
 EMAIL_USE_TLS = True
-EMAIL_USE_SSL = True
 
 
 # Quick-start development settings - unsuitable for production
@@ -140,16 +140,14 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-
-
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
-    'DEFAULT_PAGINATION_CLASS': 
+    'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.PageNumberPagination',
-        'PAGE_SIZE': 100 
+        'PAGE_SIZE': 100
 }
 
 AUTH_USER_MODEL = 'user.CustomUser'

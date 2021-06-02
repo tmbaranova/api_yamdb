@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
-# from django.db.models import Avg
 from rest_framework import permissions, viewsets, filters, mixins
+from rest_framework import exceptions
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Category, Genre, Title, Review
 from .permissions import IsAdminOrReadOnly, IsAuthorOrAdminOrModerator
@@ -65,11 +65,14 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         title = get_object_or_404(Title, id=self.kwargs['title_id'])
-        serializer.save(author=self.request.user, title=title)
+        author = self.request.user
+        if Review.objects.filter(title=title, author=author).exists():
+            raise exceptions.ValidationError('Only one review '
+                                             'per title allowed')
+        serializer.save(author=author, title=title)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    # queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsAuthorOrAdminOrModerator]
