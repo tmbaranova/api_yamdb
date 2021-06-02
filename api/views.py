@@ -44,7 +44,7 @@ class GenreViewSet(CustomViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     serializer_class = TitleCreateSerializer
     queryset = Title.objects.all().annotate(
-               rating=Avg('reviews__score')).order_by('-id')
+        rating=Avg('reviews__score')).order_by('-id')
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend]

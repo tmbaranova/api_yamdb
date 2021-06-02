@@ -22,9 +22,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
-    USER = "user"
-    MODERATOR = "moderator"
-    ADMIN = "admin"
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
     USER_TYPE_CHOICES = (
         (USER, 'Normal User'),
         (MODERATOR, 'Moderator'),
