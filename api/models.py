@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from .validators import validate_title_year
 
+from .validators import validate_title_year
 
 User = get_user_model()
 
