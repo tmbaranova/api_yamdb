@@ -62,6 +62,17 @@ class Review(models.Model):
     )
     pub_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-pub_date']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'title'],
+                name='just_one_review_per_author')
+        ]
+
+    def __str__(self):
+        return self.text[:15]
+
 
 class Comment(models.Model):
     text = models.TextField()
@@ -76,3 +87,9 @@ class Comment(models.Model):
         related_name='comments'
     )
     pub_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-pub_date']
+
+    def __str__(self):
+        return self.text[:15]
