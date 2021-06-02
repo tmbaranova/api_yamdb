@@ -12,6 +12,16 @@ router.register('users', UserViewSet, basename='users')
 router.register('categories', views.CategoryViewSet, basename='category')
 router.register('genres', views.GenreViewSet, basename='genre')
 router.register('titles', views.TitleViewSet, basename='title')
+router.register(
+    r'titles/(?P<title_id>\d+)/reviews',
+    views.ReviewViewSet,
+    basename='reviews'
+)
+router.register(
+    r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
+    views.CommentViewSet,
+    basename='comments'
+)
 
 v1_patterns = [
     path('auth/token/', get_token_view,
