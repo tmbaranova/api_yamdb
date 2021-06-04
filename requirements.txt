@@ -30,4 +30,5 @@ djangorestframework_simplejwt
 isort
 flake8
 django-filter
+python-dotenv
 

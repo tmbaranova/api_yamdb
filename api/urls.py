@@ -1,10 +1,8 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from user.views import (CurrentUserDetail, UserViewSet, email_view,
-                        get_token_view)
-
 from . import views
+from .views import CurrentUserDetail, UserViewSet, login_view, signup_view
 
 router = DefaultRouter()
 
@@ -24,12 +22,12 @@ router.register(
 )
 
 v1_patterns = [
-    path('auth/token/', get_token_view,
+    path('auth/token/', login_view,
          name='token'),
-    path('auth/token/refresh/', get_token_view,
+    path('auth/token/refresh/', login_view,
          name='token_refresh'),
     path('users/me/', CurrentUserDetail.as_view()),
-    path('auth/email/', email_view, name='email'),
+    path('auth/email/', signup_view, name='email'),
 
     path('', include(router.urls)),
 

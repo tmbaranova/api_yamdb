@@ -19,10 +19,10 @@ class EmailSerializer(serializers.Serializer):
 
 class ConfirmationCodeAndEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    confirmation_code = serializers.IntegerField()
+    confirmation_code = serializers.CharField()
 
     def validate(self, data):
         user = get_object_or_404(User, email=data['email'])
-        if int(user.confirmation_code) != int(data['confirmation_code']):
+        if user.confirmation_code != data['confirmation_code']:
             raise serializers.ValidationError('Неверный код подтверждения')
         return data

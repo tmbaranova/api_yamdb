@@ -1,14 +1,29 @@
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import exceptions, filters, mixins, permissions, viewsets
+from rest_framework import (exceptions, filters, mixins, permissions, status,
+                            viewsets)
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from user.serializers import (ConfirmationCodeAndEmailSerializer,
+                              EmailSerializer, UserSerializer)
 
 from .filters import TitleFilter
 from .models import Category, Genre, Review, Title
-from .permissions import IsAdminOrReadOnly, IsAuthorOrAdminOrModerator
+from .permissions import IsAdmin, IsAdminOrReadOnly, IsAuthorOrAdminOrModerator
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleCreateSerializer, TitleReadSerializer)
+
+User = get_user_model()
 
 
 class CustomViewSet(
@@ -94,3 +109,74 @@ class CommentViewSet(viewsets.ModelViewSet):
             title__id=self.kwargs['title_id']
         )
         serializer.save(author=self.request.user, review=review)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = 'username'
+    permission_classes = [IsAdmin]
+    search_fields = ['user__username', ]
+
+
+class CurrentUserDetail(APIView):
+    def get(self, request):
+        if request.user.is_authenticated:
+            serializer = UserSerializer(request.user)
+            return Response(serializer.data)
+        return Response('Авторизуйтесь, пожалуйста',
+                        status=status.HTTP_401_UNAUTHORIZED)
+
+    def patch(self, request):
+        if request.user.is_authenticated:
+            serializer = UserSerializer(request.user, data=request.data,
+                                        partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response('Авторизуйтесь, пожалуйста',
+                        status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def signup_view(request):
+    serializer = EmailSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    email = serializer.validated_data.get('email')
+    if User.objects.filter(email=email).exists():
+        user = User.objects.get(email=email)
+        confirmation_code = user.confirmation_code
+        message = f'Ваш код подтверждения:{confirmation_code}'
+        send_mail('Код подтверждения', message,
+                  settings.DEFAULT_FROM_EMAIL, [email])
+        return Response('Код отправлен еще раз', status=status.HTTP_200_OK)
+
+    username = email.split('@')[0]
+    user = User.objects.create_user(email=email, username=username)
+    confirmation_code = default_token_generator.make_token(user)
+    User.objects.filter(email=email).update(
+        confirmation_code=confirmation_code)
+    message = f'Ваш код подтверждения:{confirmation_code}'
+    send_mail('Код подтверждения', message,
+              settings.DEFAULT_FROM_EMAIL, [email])
+    return Response('Код отправлен', status=status.HTTP_200_OK)
+
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_view(request):
+    serializer = ConfirmationCodeAndEmailSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    email = serializer.validated_data.get('email')
+    user = get_object_or_404(User, email=email)
+    refresh = get_tokens_for_user(user)
+    return Response(refresh, status=status.HTTP_200_OK)
