@@ -26,7 +26,7 @@ from .serializers import (CategorySerializer, CommentSerializer,
 User = get_user_model()
 
 
-class CustomViewSet(
+class OnlyForCreateDestroyListViewSet(
         mixins.ListModelMixin,
         mixins.CreateModelMixin,
         mixins.DestroyModelMixin,
@@ -34,7 +34,7 @@ class CustomViewSet(
     pass
 
 
-class CategoryViewSet(CustomViewSet):
+class CategoryViewSet(OnlyForCreateDestroyListViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [
@@ -46,7 +46,7 @@ class CategoryViewSet(CustomViewSet):
     search_fields = ['name']
 
 
-class GenreViewSet(CustomViewSet):
+class GenreViewSet(OnlyForCreateDestroyListViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
